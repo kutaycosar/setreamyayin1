@@ -75,6 +75,6 @@ app.post('/delete-item', function(req, res) {
   })
 })
 
-app.use('/msdhayvansagligi', router)
+app.use('/', router)
 
 module.exports = app
