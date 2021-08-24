@@ -10,20 +10,21 @@ let User = function(data) {
 
 User.prototype.cleanUp = function() {
   if (typeof(this.data.username) != "string") {this.data.username = ""}
-  // if (typeof(this.data.email) != "string") {this.data.email = ""}
+  if (typeof(this.data.email) != "string") {this.data.email = ""}
   // if (typeof(this.data.password) != "string") {this.data.password = ""}
-  if (typeof(this.data.brans) != "string") {this.data.brans = ""}
-  if (typeof(this.data.sehir) != "string") {this.data.sehir = ""}
+  if (typeof(this.data.unvan) != "string") {this.data.brans = ""}
+  if (typeof(this.data.firma) != "string") {this.data.firma = ""}
   if (typeof(this.data.tckimlik) != "string") {this.data.tckimlik = ""}
 
   // get rid of any bogus properties
   this.data = {
     username: this.data.username.trim(),
-    // email: this.data.email.trim().toLowerCase(),
+    email: this.data.email.trim().toLowerCase(),
     // password: this.data.password,
-    brans: this.data.brans,
-    sehir: this.data.sehir,
-    tckimlik: this.data.tckimlik
+    unvan: this.data.unvan,
+    firma: this.data.firma,
+    checkbox: this.data.checkbox
+    // tckimlik: this.data.tckimlik
     
   }
 }
@@ -31,20 +32,21 @@ User.prototype.cleanUp = function() {
 User.prototype.validate = function() {
   return new Promise(async (resolve, reject) => {
     if (this.data.username == "") {this.errors.push("İsim soy isim girmelisiniz.")}
-    if (this.data.brans == "") {this.errors.push("Branş girmelisiniz.")}
-    if (this.data.sehir == "") {this.errors.push("Şehir girmelisiniz.")}
-    if (this.data.tckimlik == "") {this.errors.push("T.C. kimlik no girmelisiniz.")}
+    if (this.data.unvan == "") {this.errors.push("Ünvan girmelisiniz.")}
+    if (this.data.firma == "") {this.errors.push("Firma girmelisiniz.")}
+    if (this.data.checkbox != "onaylandi") { this.errors.push("KVKK metini onaylamanız gerekiyor.") }
+    // if (this.data.tckimlik == "") {this.errors.push("T.C. kimlik no girmelisiniz.")}
 
     // if (this.data.username != "" && !validator.isAlphanumeric(this.data.username)) {this.errors.push("Kullanıcı adı sadece harf ve numara barındırabilir.")}
-    // if (!validator.isEmail(this.data.email)) {this.errors.push("Geçerli bir mail adresi girmelisiniz.")}
+    if (!validator.isEmail(this.data.email)) {this.errors.push("Geçerli bir mail adresi girmelisiniz.")}
     // if (this.data.password == "") {this.errors.push("Şifre girmelisiniz.")}
     // if (this.data.password.length > 0 && this.data.password.length < 8) {this.errors.push("Oluşturulan şifre en az sekiz karakterden oluşmalıdır.")}
     // if (this.data.password.length > 50) {this.errors.push("Oluşturulan şifre elli karakteri geçemez.")}
     // if (this.data.username.length > 0 && this.data.username.length < 3) {this.errors.push("Kullanıcı adı üç karakterden az olamaz.")}
     if (this.data.username.length < 3) {this.errors.push("İsim soyisim 3 karakterden az olamaz.")}
     if (this.data.username.length > 50) {this.errors.push("İsim soyisim 50 karakteri geçemez.")}
-    if (this.data.tckimlik.length < 10) {this.errors.push("T.C. kimlik no 10 haneden az olamaz.")}
-    if (this.data.tckimlik.length > 14) {this.errors.push("T.C. kimlik no 14 haneden fazla olamaz.")}
+    // if (this.data.tckimlik.length < 10) {this.errors.push("T.C. kimlik no 10 haneden az olamaz.")}
+    // if (this.data.tckimlik.length > 14) {this.errors.push("T.C. kimlik no 14 haneden fazla olamaz.")}
   
     // Only if username is valid then check to see if it's already taken
     // if (this.data.username.length > 2 && this.data.username.length < 31 && validator.isAlphanumeric(this.data.username)) {
@@ -86,7 +88,7 @@ User.prototype.register = function() {
   
     // Step #2: Only if there are no validation errors 
     // then save the user data into a database
-    if (!this.errors.length) {
+    if (!this.errors.length && this.data.checkbox == "onaylandi") {
       // hash user password
       let salt = bcrypt.genSaltSync(10)
       // this.data.password = bcrypt.hashSync(this.data.password, salt)
